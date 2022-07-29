@@ -1,35 +1,52 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
+  const [enteredValueTouched, setEnteredValueTouched] = useState(false);
 
-  const enteredRef = useRef();
+  const enteredValueIsValid = enteredValue.trim() !== "";
+
+  const enteredValueIsInvalid = !enteredValueIsValid && enteredValueTouched;
 
   const enteredValueHandler = (e) => {
     setEnteredValue(e.target.value);
+  };
+  const enteredValueBlurHandler = () => {
+    setEnteredValueTouched(true);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
+    setEnteredValueTouched(true);
+
+    if (!enteredValueIsInvalid) {
+      return;
+    }
+
     console.log(enteredValue);
 
-    console.log(enteredRef.current.value);
-
     setEnteredValue("");
-    enteredRef.current.value = ""; // not IDEAL, react in perfect dont need to manipulate DOM
+    setEnteredValueTouched(false);
   };
+
+  const nameInputClasses = enteredValueIsInvalid
+    ? "form-control invalid"
+    : "form-control ";
 
   return (
     <form onSubmit={submitHandler}>
-      <div className="form-control">
+      <div className={nameInputClasses}>
         <label htmlFor="name">Your Name</label>
         <input
-          ref={enteredRef}
           type="text"
           id="name"
           onChange={enteredValueHandler}
+          onBlur={enteredValueBlurHandler}
         />
+        {enteredValueIsInvalid && (
+          <p className="error-text">Name must not be empty.</p>
+        )}
       </div>
       <div className="form-actions">
         <button>Submit</button>
