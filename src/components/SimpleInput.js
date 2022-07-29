@@ -8,6 +8,12 @@ const SimpleInput = (props) => {
 
   const enteredValueIsInvalid = !enteredValueIsValid && enteredValueTouched;
 
+  let formIsValid = false;
+
+  if (enteredValueIsValid) {
+    formIsValid = true;
+  }
+
   const enteredValueHandler = (e) => {
     setEnteredValue(e.target.value);
   };
@@ -49,7 +55,7 @@ const SimpleInput = (props) => {
         )}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
